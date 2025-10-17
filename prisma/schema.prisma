@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Warehouse {
+  id        String   @id @default(cuid())
+  name      String
+  location  String
+  capacity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  shelves   Shelf[]
+
+  @@map("warehouses")
+}
+
+model Shelf {
+  id          String   @id @default(cuid())
+  name        String
+  location    String
+  capacity    Int
+  warehouseId String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  items       Item[]
+
+  @@map("shelves")
+}
+
+model Item {
+  id          String   @id @default(cuid())
+  name        String
+  sku         String   @unique
+  quantity    Int
+  description String?
+  shelfId     String
+  shelf       Shelf    @relation(fields: [shelfId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("items")
+}
