@@ -1,0 +1,699 @@
+openapi: 3.0.3
+info:
+  title: Warehouse Inventory Management API
+  description: Backend APIs for managing warehouses, shelves, and inventory items with transactional support
+  version: 1.0.0
+  contact:
+    name: API Support
+
+servers:
+  - url: http://localhost:3000/api
+    description: Development server
+
+tags:
+  - name: Warehouses
+    description: Warehouse management operations
+  - name: Shelves
+    description: Shelf management operations
+  - name: Items
+    description: Inventory item management operations
+
+paths:
+  /warehouses:
+    get:
+      tags:
+        - Warehouses
+      summary: List all warehouses
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Warehouse'
+    post:
+      tags:
+        - Warehouses
+      summary: Create a new warehouse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWarehouse'
+      responses:
+        '201':
+          description: Warehouse created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Warehouse'
+
+  /warehouses/{id}:
+    get:
+      tags:
+        - Warehouses
+      summary: Get warehouse by ID
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/WarehouseDetailed'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+        - Warehouses
+      summary: Update warehouse
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWarehouse'
+      responses:
+        '200':
+          description: Warehouse updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Warehouse'
+    delete:
+      tags:
+        - Warehouses
+      summary: Delete warehouse
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/DeleteSuccess'
+
+  /warehouses/{id}/statistics:
+    get:
+      tags:
+        - Warehouses
+      summary: Get warehouse statistics
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/WarehouseStatistics'
+
+  /shelves:
+    get:
+      tags:
+        - Shelves
+      summary: List all shelves
+      parameters:
+        - name: warehouseId
+          in: query
+          schema:
+            type: string
+          description: Filter by warehouse ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShelfDetailed'
+    post:
+      tags:
+        - Shelves
+      summary: Create a new shelf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateShelf'
+      responses:
+        '201':
+          description: Shelf created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ShelfDetailed'
+
+  /shelves/{id}:
+    get:
+      tags:
+        - Shelves
+      summary: Get shelf by ID
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ShelfDetailed'
+    patch:
+      tags:
+        - Shelves
+      summary: Update shelf
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateShelf'
+      responses:
+        '200':
+          description: Shelf updated
+    delete:
+      tags:
+        - Shelves
+      summary: Delete shelf
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/DeleteSuccess'
+
+  /shelves/{id}/clear:
+    post:
+      tags:
+        - Shelves
+      summary: Clear all items from shelf (transactional)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Shelf cleared
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      shelfId:
+                        type: string
+                      deletedItemsCount:
+                        type: integer
+
+  /shelves/{id}/statistics:
+    get:
+      tags:
+        - Shelves
+      summary: Get shelf statistics
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ShelfStatistics'
+
+  /items:
+    get:
+      tags:
+        - Items
+      summary: List all items
+      parameters:
+        - name: shelfId
+          in: query
+          schema:
+            type: string
+          description: Filter by shelf ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ItemDetailed'
+    post:
+      tags:
+        - Items
+      summary: Create a new item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateItem'
+      responses:
+        '201':
+          description: Item created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ItemDetailed'
+
+  /items/{id}:
+    get:
+      tags:
+        - Items
+      summary: Get item by ID
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ItemDetailed'
+    patch:
+      tags:
+        - Items
+      summary: Update item
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateItem'
+      responses:
+        '200':
+          description: Item updated
+    delete:
+      tags:
+        - Items
+      summary: Delete item
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/DeleteSuccess'
+
+  /items/sku/{sku}:
+    get:
+      tags:
+        - Items
+      summary: Get item by SKU
+      parameters:
+        - name: sku
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ItemDetailed'
+
+  /items/{id}/adjust-quantity:
+    post:
+      tags:
+        - Items
+      summary: Adjust item quantity (transactional)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - adjustment
+              properties:
+                adjustment:
+                  type: integer
+                  description: Positive to add, negative to subtract
+                  example: 10
+      responses:
+        '200':
+          description: Quantity adjusted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ItemDetailed'
+
+  /items/{id}/move:
+    post:
+      tags:
+        - Items
+      summary: Move item to another shelf (transactional)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - targetShelfId
+              properties:
+                targetShelfId:
+                  type: string
+                  description: Target shelf ID
+                quantity:
+                  type: integer
+                  description: Quantity to move (optional, defaults to all)
+                  minimum: 1
+      responses:
+        '200':
+          description: Item moved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ItemDetailed'
+
+components:
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+
+  schemas:
+    Warehouse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        location:
+          type: string
+        capacity:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    WarehouseDetailed:
+      allOf:
+        - $ref: '#/components/schemas/Warehouse'
+        - type: object
+          properties:
+            shelves:
+              type: array
+              items:
+                $ref: '#/components/schemas/Shelf'
+
+    CreateWarehouse:
+      type: object
+      required:
+        - name
+        - location
+        - capacity
+      properties:
+        name:
+          type: string
+          minLength: 1
+        location:
+          type: string
+          minLength: 1
+        capacity:
+          type: integer
+          minimum: 1
+
+    UpdateWarehouse:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        location:
+          type: string
+          minLength: 1
+        capacity:
+          type: integer
+          minimum: 1
+
+    WarehouseStatistics:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        totalShelves:
+          type: integer
+        totalItems:
+          type: integer
+        totalQuantity:
+          type: integer
+        capacity:
+          type: integer
+        utilizationPercentage:
+          type: number
+          format: float
+
+    Shelf:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        location:
+          type: string
+        capacity:
+          type: integer
+        warehouseId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ShelfDetailed:
+      allOf:
+        - $ref: '#/components/schemas/Shelf'
+        - type: object
+          properties:
+            warehouse:
+              $ref: '#/components/schemas/Warehouse'
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/Item'
+
+    CreateShelf:
+      type: object
+      required:
+        - name
+        - location
+        - capacity
+        - warehouseId
+      properties:
+        name:
+          type: string
+          minLength: 1
+        location:
+          type: string
+          minLength: 1
+        capacity:
+          type: integer
+          minimum: 1
+        warehouseId:
+          type: string
+
+    UpdateShelf:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        location:
+          type: string
+          minLength: 1
+        capacity:
+          type: integer
+          minimum: 1
+        warehouseId:
+          type: string
+
+    ShelfStatistics:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        warehouseId:
+          type: string
+        totalItems:
+          type: integer
+        totalQuantity:
+          type: integer
+        capacity:
+          type: integer
+        utilizationPercentage:
+          type: number
+          format: float
+
+    Item:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        sku:
+          type: string
+        quantity:
+          type: integer
+        description:
+          type: string
+          nullable: true
+        shelfId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ItemDetailed:
+      allOf:
+        - $ref: '#/components/schemas/Item'
+        - type: object
+          properties:
+            shelf:
+              $ref: '#/components/schemas/ShelfDetailed'
+
+    CreateItem:
+      type: object
+      required:
+        - name
+        - sku
+        - quantity
+        - shelfId
+      properties:
+        name:
+          type: string
+          minLength: 1
+        sku:
+          type: string
+          minLength: 1
+        quantity:
+          type: integer
+          minimum: 0
+        description:
+          type: string
+        shelfId:
+          type: string
+
+    UpdateItem:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        sku:
+          type: string
+          minLength: 1
+        quantity:
+          type: integer
+          minimum: 0
+        description:
+          type: string
+          nullable: true
+        shelfId:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    DeleteSuccess:
+      description: Resource deleted successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
