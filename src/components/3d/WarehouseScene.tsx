@@ -9,7 +9,7 @@ interface ShelfProps {
   name: string;
 }
 
-unction Shelf({ position, name: _name }: ShelfProps) {
+function Shelf({ position, name: _name }: ShelfProps) {
 // mark as intentionally unused to satisfy the linter
 void _name;
 
