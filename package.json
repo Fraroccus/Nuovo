@@ -1,0 +1,23 @@
+{
+  "name": "vercel-prisma-postgres",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Minimal Vercel Serverless project with Prisma and managed Postgres",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "postinstall": "prisma generate",
+    "prisma:generate": "prisma generate",
+    "prisma:deploy": "node scripts/run-prisma.js deploy",
+    "prisma:push": "node scripts/run-prisma.js push",
+    "vercel-build": "node scripts/run-prisma.js vercel"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.19.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.19.0"
+  }
+}
