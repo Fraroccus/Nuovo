@@ -1,0 +1,13 @@
+{
+  "name": "warehouse-search-highlighting",
+  "version": "1.0.0",
+  "description": "Search, autocomplete, and cross-view highlighting for 2D and 3D views",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": ["search", "autocomplete", "2d", "3d", "highlight", "warehouse"],
+  "author": "",
+  "license": "MIT"
+}
