@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import type { Prisma } from '@prisma/client';
 
 export async function GET(request: Request) {
   try {
@@ -7,7 +7,7 @@ export async function GET(request: Request) {
     const shelfId = searchParams.get("shelfId");
     const category = searchParams.get("category");
 
-    import type { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 
 const where: Prisma.ItemWhereInput = {};
 if (shelfId) where.shelfId = shelfId;
