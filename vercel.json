@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "installCommand": "npm ci || npm i",
+  "outputDirectory": "dist",
+  "framework": "none",
+  "github": {
+    "enabled": true,
+    "silent": true
+  },
+  "env": {
+    "DATABASE_URL": "@database_url"
+  }
+}
