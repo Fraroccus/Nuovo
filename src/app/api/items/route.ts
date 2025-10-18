@@ -7,23 +7,19 @@ export async function GET(request: Request) {
     const shelfId = searchParams.get("shelfId");
     const category = searchParams.get("category");
 
-    const where: any = {};
-    if (shelfId) where.shelfId = shelfId;
-    if (category) where.category = category;
+    import type { Prisma } from '@prisma/client';
 
-    const items = await prisma.item.findMany({
-      where,
-      include: {
-        shelf: {
-          include: {
-            warehouse: true,
-          },
-        },
-      },
-      orderBy: {
-        name: "asc",
-      },
-    });
+const where: Prisma.ItemWhereInput = {};
+if (shelfId) where.shelfId = shelfId;
+if (category) where.category = category;
+
+const items = await prisma.item.findMany({
+where,
+include: {
+shelf: { include: { warehouse: true } },
+},
+orderBy: { name: 'asc' },
+});
 
     return NextResponse.json(items);
   } catch (error) {
