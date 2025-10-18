@@ -1,34 +1,33 @@
 "use client";
-
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Grid, Box } from "@react-three/drei";
 import { Suspense } from "react";
 
-interface ShelfProps {
+type ShelfProps = {
   position: [number, number, number];
   name: string;
-}
+};
 
 function Shelf({ position, name: _name }: ShelfProps) {
-// mark as intentionally unused to satisfy the linter
-void _name;
+  // mark as intentionally unused to satisfy the linter
+  void _name;
 
-return (
-<group position={position}>
-<Box args={[2, 3, 1]} position={[0, 1.5, 0]}>
-<meshStandardMaterial color="#8B4513" />
-</Box>
-<Box args={[2, 0.2, 1]} position={[0, 0.6, 0]}>
-<meshStandardMaterial color="#654321" />
-</Box>
-<Box args={[2, 0.2, 1]} position={[0, 1.5, 0]}>
-<meshStandardMaterial color="#654321" />
-</Box>
-<Box args={[2, 0.2, 1]} position={[0, 2.4, 0]}>
-<meshStandardMaterial color="#654321" />
-</Box>
-</group>
-);
+  return (
+    <group position={position}>
+      <Box args={[2, 3, 1]} position={[0, 1.5, 0]}>
+        <meshStandardMaterial color="#8B4513" />
+      </Box>
+      <Box args={[2, 0.2, 1]} position={[0, 0.6, 0]}>
+        <meshStandardMaterial color="#654321" />
+      </Box>
+      <Box args={[2, 0.2, 1]} position={[0, 1.5, 0]}>
+        <meshStandardMaterial color="#654321" />
+      </Box>
+      <Box args={[2, 0.2, 1]} position={[0, 2.4, 0]}>
+        <meshStandardMaterial color="#654321" />
+      </Box>
+    </group>
+  );
 }
 
 export function WarehouseScene() {
