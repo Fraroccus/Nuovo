@@ -1,0 +1,18 @@
+// Prisma schema for managed Postgres on Vercel
+// Datasource and generator
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // Optional: non-pooled connection string for migrations
+}
+
+// Minimal model to validate connectivity and enable initial schema
+model Example {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+}
