@@ -1,0 +1,128 @@
+:root {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #1f2933;
+  background-color: #f5f7fa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-shell__header {
+  padding: 1.5rem 2rem;
+  background: #1f2933;
+  color: #ffffff;
+}
+
+.app-shell__main {
+  flex: 1;
+  padding: 1.5rem 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.warehouse-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.warehouse-controls__button {
+  cursor: pointer;
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+  padding: 0.55rem 1.1rem;
+  border-radius: 0.45rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.warehouse-controls__button:hover,
+.warehouse-controls__button:focus {
+  background: #1d4ed8;
+}
+
+.warehouse-map {
+  flex: 1;
+  min-height: 420px;
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
+    repeating-linear-gradient(
+      to right,
+      transparent,
+      transparent calc(100% / 24 - 1px),
+      rgba(43, 108, 176, 0.12) calc(100% / 24 - 1px),
+      rgba(43, 108, 176, 0.12) calc(100% / 24)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent calc(100% / 12 - 1px),
+      rgba(43, 108, 176, 0.12) calc(100% / 12 - 1px),
+      rgba(43, 108, 176, 0.12) calc(100% / 12)
+    );
+  border-radius: 1rem;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.warehouse-map__canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.shelf {
+  cursor: grab;
+  transition: opacity 0.15s ease, r 0.15s ease;
+}
+
+.shelf--selected {
+  opacity: 0.85;
+  cursor: grabbing;
+}
+
+.shelf__handle {
+  cursor: nwse-resize;
+}
+
+.shelf-tooltip {
+  position: absolute;
+  min-width: 160px;
+  background: #111827;
+  color: #f9fafb;
+  border-radius: 0.65rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.28);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.shelf-tooltip__name {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.shelf-tooltip__meta {
+  margin: 0;
+  color: rgba(226, 232, 240, 0.9);
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 0.5rem;
+  row-gap: 0.35rem;
+}
