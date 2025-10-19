@@ -8,7 +8,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
+ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
@@ -19,6 +19,10 @@ model Warehouse {
   location    String
   description String?
   capacity    Int      @default(0)
+  width       Int      @default(10)
+  length      Int      @default(10)
+  height      Int      @default(5)
+  gridSize    Int      @default(1)
   shelves     Shelf[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { useWarehouseStore } from "@/store/useWarehouseStore";
 
 export function Header() {
+  const { openAddWarehouseModal } = useWarehouseStore();
+
   return (
     <header className="border-b border-gray-200 bg-white">
       <div className="container mx-auto px-4">
@@ -31,7 +34,10 @@ export function Header() {
             </nav>
           </div>
           <div className="flex items-center space-x-4">
-            <button className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+            <button
+              onClick={openAddWarehouseModal}
+              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            >
               Add Warehouse
             </button>
           </div>
