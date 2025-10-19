@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { useWarehouseStore } from "@/store/useWarehouseStore";
 
 interface Warehouse {
   id: string;
@@ -21,6 +22,7 @@ async function fetchWarehouses(): Promise<Warehouse[]> {
 }
 
 export default function WarehousesPage() {
+  const { openAddWarehouseModal } = useWarehouseStore();
   const {
     data: warehouses,
     isLoading,
@@ -54,7 +56,10 @@ export default function WarehousesPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">Warehouses</h1>
-        <button className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+        <button
+          onClick={openAddWarehouseModal}
+          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+        >
           Add Warehouse
         </button>
       </div>
@@ -65,6 +70,14 @@ export default function WarehousesPage() {
           <p className="mt-2 text-sm text-gray-500">
             Get started by adding your first warehouse.
           </p>
+          <div className="mt-6">
+            <button
+              onClick={openAddWarehouseModal}
+              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            >
+              Create Warehouse
+            </button>
+          </div>
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

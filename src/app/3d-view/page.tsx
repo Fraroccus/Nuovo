@@ -4,7 +4,7 @@ import { WarehouseScene } from "@/components/3d/WarehouseScene";
 import { useWarehouseStore } from "@/store/useWarehouseStore";
 
 export default function ThreeDViewPage() {
-  const { viewMode, setViewMode } = useWarehouseStore();
+  const { viewMode, setViewMode, selectedWarehouseId } = useWarehouseStore();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -16,6 +16,12 @@ export default function ThreeDViewPage() {
           Interactive 3D visualization of warehouse layout and inventory
         </p>
       </div>
+
+      {selectedWarehouseId && (
+        <div className="mb-4 rounded-md bg-blue-50 p-3 text-sm text-blue-700">
+          Selected warehouse: {selectedWarehouseId}
+        </div>
+      )}
 
       <div className="mb-4 flex space-x-4">
         <button

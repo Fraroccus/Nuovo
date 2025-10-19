@@ -1,5 +1,21 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const schema = z.object({
+  name: z.string().min(1),
+  width: z.number().int().positive().optional(),
+  length: z.number().int().positive().optional(),
+  height: z.number().int().positive().optional(),
+  gridSize: z.number().int().positive().optional(),
+});
+
+const DEFAULTS = {
+  width: 10,
+  length: 10,
+  height: 5,
+  gridSize: 1,
+};
 
 export async function GET() {
   try {
@@ -25,9 +41,25 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const json = await request.json();
+    const parsed = schema.safeParse(json);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid input", details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+
+    const data = {
+      name: parsed.data.name,
+      width: parsed.data.width ?? DEFAULTS.width,
+      length: parsed.data.length ?? DEFAULTS.length,
+      height: parsed.data.height ?? DEFAULTS.height,
+      gridSize: parsed.data.gridSize ?? DEFAULTS.gridSize,
+    };
+
     const warehouse = await prisma.warehouse.create({
-      data: body,
+      data,
     });
     return NextResponse.json(warehouse, { status: 201 });
   } catch (error) {
