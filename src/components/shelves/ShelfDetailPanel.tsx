@@ -15,6 +15,32 @@ type Shelf = {
   name: string;
 };
 
+type ItemDTO = {
+  id: string;
+  shelfId: string;
+  name: string;
+  sku: string;
+  quantity: number;
+  price: number;
+  category: string;
+  description: string | null;
+};
+
+type CreateItemPayload = {
+  name: string;
+  sku: string;
+  description: string | null;
+  quantity: number;
+  price: number;
+  category: string;
+  shelfId: string;
+};
+
+type OptimisticContext = {
+  previous: ItemDTO[] | undefined;
+  shelfId: string;
+};
+
 async function fetchShelfMeta(id: string): Promise<Shelf> {
   const res = await fetch(`/api/shelves/${id}`);
   if (!res.ok) throw new Error("Failed to fetch shelf");
@@ -57,7 +83,7 @@ export function ShelfDetailPanel() {
     queryClient.invalidateQueries({ queryKey: ["warehouse"] });
   };
 
-  const addMutation = useMutation({
+  const addMutation = useMutation<ItemDTO, Error, CreateItemPayload, OptimisticContext>({
     mutationFn: createItem,
     onMutate: async (vars) => {
       setMessage(null);
@@ -65,11 +91,11 @@ export function ShelfDetailPanel() {
       await queryClient.cancelQueries({
         queryKey: ["items", { shelfId: vars.shelfId }],
       });
-      const previous = queryClient.getQueryData<any>([
+      const previous = queryClient.getQueryData<ItemDTO[]>([
         "items",
         { shelfId: vars.shelfId },
       ]);
-      const optimistic = {
+      const optimistic: ItemDTO = {
         id: `temp-${Date.now()}`,
         name: vars.name,
         sku: vars.sku,
@@ -79,11 +105,11 @@ export function ShelfDetailPanel() {
         category: vars.category,
         shelfId: vars.shelfId,
       };
-      queryClient.setQueryData(
+      queryClient.setQueryData<ItemDTO[]>(
         ["items", { shelfId: vars.shelfId }],
-        (old: any) => (old ? [optimistic, ...old] : [optimistic])
+        (old) => (old ? [optimistic, ...old] : [optimistic])
       );
-      return { previous, shelfId: vars.shelfId } as const;
+      return { previous, shelfId: vars.shelfId };
     },
     onError: (err, _vars, ctx) => {
       if (ctx) {
@@ -92,7 +118,7 @@ export function ShelfDetailPanel() {
           ctx.previous
         );
       }
-      setErrorMessage((err as Error).message);
+      setErrorMessage(err.message);
     },
     onSuccess: () => {
       setMessage("Item added");
@@ -102,24 +128,23 @@ export function ShelfDetailPanel() {
     },
   });
 
-  const adjustMutation = useMutation({
-    mutationFn: ({ id, delta }: { id: string; delta: number }) =>
-      adjustItemQuantity(id, delta),
+  const adjustMutation = useMutation<ItemDTO, Error, { id: string; delta: number }, OptimisticContext>({
+    mutationFn: ({ id, delta }) => adjustItemQuantity(id, delta),
     onMutate: async ({ id, delta }) => {
       setMessage(null);
       setErrorMessage(null);
       const shelfId = selectedShelfId as string;
       await queryClient.cancelQueries({ queryKey: ["items", { shelfId }] });
-      const previous = queryClient.getQueryData<any>(["items", { shelfId }]);
-      queryClient.setQueryData(["items", { shelfId }], (old: any) => {
+      const previous = queryClient.getQueryData<ItemDTO[]>(["items", { shelfId }]);
+      queryClient.setQueryData<ItemDTO[]>(["items", { shelfId }], (old) => {
         if (!old) return old;
-        return old.map((it: any) =>
+        return old.map((it) =>
           it.id === id
             ? { ...it, quantity: Math.max(0, (it.quantity ?? 0) + delta) }
             : it
         );
       });
-      return { previous, shelfId } as const;
+      return { previous, shelfId };
     },
     onError: (err, _vars, ctx) => {
       if (ctx)
@@ -127,25 +152,25 @@ export function ShelfDetailPanel() {
           ["items", { shelfId: ctx.shelfId }],
           ctx.previous
         );
-      setErrorMessage((err as Error).message);
+      setErrorMessage(err.message);
     },
     onSuccess: () => setMessage("Quantity updated"),
     onSettled: () => invalidateAll(),
   });
 
-  const removeMutation = useMutation({
-    mutationFn: (id: string) => removeItem(id),
+  const removeMutation = useMutation<void, Error, string, OptimisticContext>({
+    mutationFn: (id) => removeItem(id),
     onMutate: async (id) => {
       setMessage(null);
       setErrorMessage(null);
       const shelfId = selectedShelfId as string;
       await queryClient.cancelQueries({ queryKey: ["items", { shelfId }] });
-      const previous = queryClient.getQueryData<any>(["items", { shelfId }]);
-      queryClient.setQueryData(
+      const previous = queryClient.getQueryData<ItemDTO[]>(["items", { shelfId }]);
+      queryClient.setQueryData<ItemDTO[]>(
         ["items", { shelfId }],
-        (old: any) => old?.filter((it: any) => it.id !== id) ?? old
+        (old) => old?.filter((it) => it.id !== id) ?? old
       );
-      return { previous, shelfId } as const;
+      return { previous, shelfId };
     },
     onError: (err, _vars, ctx) => {
       if (ctx)
@@ -153,7 +178,7 @@ export function ShelfDetailPanel() {
           ["items", { shelfId: ctx.shelfId }],
           ctx.previous
         );
-      setErrorMessage((err as Error).message);
+      setErrorMessage(err.message);
     },
     onSuccess: () => setMessage("Item removed"),
     onSettled: () => invalidateAll(),
@@ -235,7 +260,7 @@ export function ShelfDetailPanel() {
             )}
 
             <form
-              onSubmit={(e) => {
+              onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
                 if (!selectedShelfId || !canSubmit) return;
                 addMutation.mutate({
@@ -265,7 +290,7 @@ export function ShelfDetailPanel() {
                   placeholder="Name"
                   className="rounded border px-2 py-1 text-sm"
                   value={form.name}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setForm((f) => ({ ...f, name: e.target.value }))
                   }
                   disabled={addMutation.isPending}
@@ -275,7 +300,7 @@ export function ShelfDetailPanel() {
                   placeholder="SKU"
                   className="rounded border px-2 py-1 text-sm"
                   value={form.sku}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setForm((f) => ({ ...f, sku: e.target.value }))
                   }
                   disabled={addMutation.isPending}
@@ -285,7 +310,7 @@ export function ShelfDetailPanel() {
                   placeholder="Category"
                   className="rounded border px-2 py-1 text-sm"
                   value={form.category}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setForm((f) => ({ ...f, category: e.target.value }))
                   }
                   disabled={addMutation.isPending}
@@ -297,7 +322,7 @@ export function ShelfDetailPanel() {
                   step="0.01"
                   className="rounded border px-2 py-1 text-sm"
                   value={form.price}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setForm((f) => ({ ...f, price: Number(e.target.value) }))
                   }
                   disabled={addMutation.isPending}
@@ -308,7 +333,7 @@ export function ShelfDetailPanel() {
                   type="number"
                   className="rounded border px-2 py-1 text-sm"
                   value={form.quantity}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setForm((f) => ({ ...f, quantity: Number(e.target.value) }))
                   }
                   disabled={addMutation.isPending}
@@ -318,7 +343,7 @@ export function ShelfDetailPanel() {
                   placeholder="Description"
                   className="col-span-2 rounded border px-2 py-1 text-sm"
                   value={form.description}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setForm((f) => ({ ...f, description: e.target.value }))
                   }
                   disabled={addMutation.isPending}
@@ -346,7 +371,7 @@ export function ShelfDetailPanel() {
                 </div>
               ) : (
                 <ul className="space-y-2">
-                  {itemsQuery.data?.map((item) => (
+                  {itemsQuery.data?.map((item: ItemDTO) => (
                     <li
                       key={item.id}
                       className="flex items-center justify-between rounded-md border border-gray-200 p-2"
