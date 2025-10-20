@@ -30,7 +30,7 @@ const eslintConfig = [
     },
   },
   {
-    files: ["src/tests/**/*.{ts,tsx}"],
+    files: ["src/tests/**/*.{ts,tsx}", "**/*.test.{ts,tsx}"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": [
