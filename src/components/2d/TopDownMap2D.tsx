@@ -207,7 +207,7 @@ export function TopDownMap2D({
     }
   }
 
-  function onPointerUp(e: React.PointerEvent) {
+  function onPointerUp(_e: React.PointerEvent) {
     if (!drag || !preview) return;
 
     const id = drag.id;
