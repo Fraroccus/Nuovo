@@ -10,6 +10,12 @@ interface Shelf {
   name: string;
   section: string;
   level: number;
+  positionX: number;
+  positionY: number;
+  positionZ: number;
+  width: number;
+  depth: number;
+  height: number;
   _count?: { items: number };
 }
 
@@ -97,7 +103,11 @@ export default function WarehouseDashboardPage() {
         <div className="md:col-span-9">
           {viewMode === "3d" ? (
             <div className="rounded-lg border border-gray-200 bg-white p-4">
-              <WarehouseScene />
+              <WarehouseScene
+                shelves={data.shelves}
+                gridSize={data.gridSize}
+                dimensions={{ width: data.width, length: data.length }}
+              />
             </div>
           ) : (
             <div className="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-600">
