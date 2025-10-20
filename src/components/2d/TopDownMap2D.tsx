@@ -271,7 +271,13 @@ export function TopDownMap2D({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
       >
-        <rect x={0} y={0} width={viewWidth} height={viewHeight} fill="#f9fafb" />
+        <rect
+          x={0}
+          y={0}
+          width={viewWidth}
+          height={viewHeight}
+          fill="#f9fafb"
+        />
         <g>{gridLines}</g>
 
         {shelves.map((shelf) => {

@@ -80,12 +80,8 @@ export function ShelfDetailPanel() {
     queryClient.invalidateQueries({
       queryKey: ["items", { shelfId: selectedShelfId }],
     });
-    queryClient.invalidateQueries({
-      queryKey: ["items"],
-    });
-    queryClient.invalidateQueries({
-      queryKey: ["warehouse"],
-    });
+    queryClient.invalidateQueries({ queryKey: ["items"] });
+    queryClient.invalidateQueries({ queryKey: ["warehouse"] });
   };
 
   const addMutation = useMutation<
@@ -149,24 +145,19 @@ export function ShelfDetailPanel() {
       setMessage(null);
       setErrorMessage(null);
       const shelfId = selectedShelfId as string;
-      await queryClient.cancelQueries({
-        queryKey: ["items", { shelfId }],
-      });
+      await queryClient.cancelQueries({ queryKey: ["items", { shelfId }] });
       const previous = queryClient.getQueryData<ItemDTO[]>([
         "items",
         { shelfId },
       ]);
-      queryClient.setQueryData<ItemDTO[]>(
-        ["items", { shelfId }],
-        (old) => {
-          if (!old) return old;
-          return old.map((it) =>
-            it.id === id
-              ? { ...it, quantity: Math.max(0, (it.quantity ?? 0) + delta) }
-              : it
-          );
-        }
-      );
+      queryClient.setQueryData<ItemDTO[]>(["items", { shelfId }], (old) => {
+        if (!old) return old;
+        return old.map((it) =>
+          it.id === id
+            ? { ...it, quantity: Math.max(0, (it.quantity ?? 0) + delta) }
+            : it
+        );
+      });
       return { previous, shelfId };
     },
     onError: (_err: Error, _vars, ctx) => {
@@ -181,20 +172,13 @@ export function ShelfDetailPanel() {
     onSettled: () => invalidateAll(),
   });
 
-  const removeMutation = useMutation<
-    void,
-    Error,
-    string,
-    OptimisticContext
-  >({
+  const removeMutation = useMutation<void, Error, string, OptimisticContext>({
     mutationFn: (id) => removeItem(id),
     onMutate: async (id) => {
       setMessage(null);
       setErrorMessage(null);
       const shelfId = selectedShelfId as string;
-      await queryClient.cancelQueries({
-        queryKey: ["items", { shelfId }],
-      });
+      await queryClient.cancelQueries({ queryKey: ["items", { shelfId }] });
       const previous = queryClient.getQueryData<ItemDTO[]>([
         "items",
         { shelfId },
@@ -371,10 +355,7 @@ export function ShelfDetailPanel() {
                   className="rounded border px-2 py-1 text-sm"
                   value={form.quantity}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setForm((f) => ({
-                      ...f,
-                      quantity: Number(e.target.value),
-                    }))
+                    setForm((f) => ({ ...f, quantity: Number(e.target.value) }))
                   }
                   disabled={addMutation.isPending}
                 />
@@ -428,10 +409,7 @@ export function ShelfDetailPanel() {
                         <button
                           aria-label={`Decrease ${item.name}`}
                           onClick={() =>
-                            adjustMutation.mutate({
-                              id: item.id,
-                              delta: -1,
-                            })
+                            adjustMutation.mutate({ id: item.id, delta: -1 })
                           }
                           disabled={adjustMutation.isPending}
                           className="rounded bg-gray-100 px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 disabled:opacity-50"
@@ -444,10 +422,7 @@ export function ShelfDetailPanel() {
                         <button
                           aria-label={`Increase ${item.name}`}
                           onClick={() =>
-                            adjustMutation.mutate({
-                              id: item.id,
-                              delta: 1,
-                            })
+                            adjustMutation.mutate({ id: item.id, delta: 1 })
                           }
                           disabled={adjustMutation.isPending}
                           className="rounded bg-gray-100 px-2 py-1 text-sm text-gray-700 hover:bg-gray-200 disabled:opacity-50"
