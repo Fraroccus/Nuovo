@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { WarehouseScene } from "@/components/3d/WarehouseScene";
+import { TopDownMap2D } from "@/components/2d/TopDownMap2D";
 import { useWarehouseStore } from "@/store/useWarehouseStore";
 
 interface Shelf {
@@ -110,8 +111,12 @@ export default function WarehouseDashboardPage() {
               />
             </div>
           ) : (
-            <div className="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-600">
-              2D warehouse view placeholder
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <TopDownMap2D
+                shelves={data.shelves}
+                gridSize={data.gridSize}
+                dimensions={{ width: data.width, length: data.length }}
+              />
             </div>
           )}
         </div>
