@@ -23,6 +23,7 @@ model Warehouse {
   length      Int      @default(10)
   height      Int      @default(5)
   gridSize    Int      @default(1)
+  isDefault   Boolean  @default(false)
   shelves     Shelf[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -31,16 +32,23 @@ model Warehouse {
 }
 
 model Shelf {
-  id          String    @id @default(cuid())
-  name        String
-  section     String
-  level       Int
-  capacity    Int       @default(0)
-  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
-  warehouseId String
-  items       Item[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id           String    @id @default(cuid())
+  name         String
+  section      String
+  level        Int
+  capacity     Int       @default(0)
+  // Geometry: position (x,y,z) in grid units and shelf dimensions
+  positionX    Int       @default(0)
+  positionY    Int       @default(0)
+  positionZ    Int       @default(0)
+  width        Int       @default(1)
+  depth        Int       @default(1)
+  height       Int       @default(1)
+  warehouse    Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  warehouseId  String
+  items        Item[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@index([warehouseId])
   @@index([section])
