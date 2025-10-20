@@ -2,29 +2,23 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 interface WarehouseState {
-  selectedWarehouseId: string | null;
+  warehouseId: string | null;
   selectedShelfId: string | null;
-  viewMode: "list" | "3d";
-  isAddWarehouseModalOpen: boolean;
-  setSelectedWarehouse: (id: string | null) => void;
+  viewMode: "2d" | "3d";
+  setWarehouseId: (id: string | null) => void;
   setSelectedShelf: (id: string | null) => void;
-  setViewMode: (mode: "list" | "3d") => void;
-  openAddWarehouseModal: () => void;
-  closeAddWarehouseModal: () => void;
+  setViewMode: (mode: "2d" | "3d") => void;
 }
 
 export const useWarehouseStore = create<WarehouseState>()(
   devtools(
     (set) => ({
-      selectedWarehouseId: null,
+      warehouseId: null,
       selectedShelfId: null,
-      viewMode: "list",
-      isAddWarehouseModalOpen: false,
-      setSelectedWarehouse: (id) => set({ selectedWarehouseId: id }),
+      viewMode: "2d",
+      setWarehouseId: (id) => set({ warehouseId: id }),
       setSelectedShelf: (id) => set({ selectedShelfId: id }),
       setViewMode: (mode) => set({ viewMode: mode }),
-      openAddWarehouseModal: () => set({ isAddWarehouseModalOpen: true }),
-      closeAddWarehouseModal: () => set({ isAddWarehouseModalOpen: false }),
     }),
     { name: "warehouse-store" }
   )

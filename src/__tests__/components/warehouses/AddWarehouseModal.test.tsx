@@ -1,23 +1,29 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Providers } from "@/lib/providers";
-import { Header } from "@/components/layout/Header";
-import { AddWarehouseModal } from "@/components/warehouses/AddWarehouseModal";
+import WarehouseDashboardPage from "@/app/warehouse/page";
 import { useWarehouseStore } from "@/store/useWarehouseStore";
-
-jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: jest.fn() }),
-}));
 
 function Wrapper({ children }: { children: React.ReactNode }) {
   return <Providers>{children}</Providers>;
 }
 
-describe("AddWarehouseModal", () => {
+describe("WarehouseDashboardPage", () => {
   beforeEach(() => {
     (global as any).fetch = jest.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ id: "new-id", name: "Test W", width: 10, length: 10, height: 5, gridSize: 1 }),
+      json: async () => ({
+        id: "w1",
+        name: "Default Warehouse",
+        location: "",
+        description: null,
+        capacity: 0,
+        width: 20,
+        length: 20,
+        height: 6,
+        gridSize: 1,
+        shelves: [],
+      }),
     });
   });
 
@@ -25,38 +31,28 @@ describe("AddWarehouseModal", () => {
     jest.resetAllMocks();
   });
 
-  it("opens from header button, validates, submits, and closes", async () => {
+  it("loads default warehouse, sets store, and toggles view", async () => {
     render(
       <Wrapper>
-        <Header />
-        <AddWarehouseModal />
+        <WarehouseDashboardPage />
       </Wrapper>
     );
 
-    const openBtn = screen.getByText(/Add Warehouse/i);
-    await userEvent.click(openBtn);
-
-    expect(await screen.findByRole("dialog")).toBeInTheDocument();
-
-    const nameInput = screen.getByPlaceholderText(/Central Warehouse/i) as HTMLInputElement;
-    // Clear then try submit to see validation
-    await userEvent.clear(nameInput);
-    await userEvent.click(screen.getByRole("button", { name: /Create/i }));
-    expect(await screen.findByText(/Name is required/i)).toBeInTheDocument();
-
-    // Fill and submit
-    await userEvent.type(nameInput, "Test W");
-    await userEvent.click(screen.getByRole("button", { name: /Create/i }));
+    expect(await screen.findByText(/Default Warehouse/i)).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(useWarehouseStore.getState().warehouseId).toBe("w1");
+      expect(useWarehouseStore.getState().viewMode).toBe("2d");
     });
 
-    expect(global.fetch).toHaveBeenCalledWith(
-      "/api/warehouses",
-      expect.objectContaining({ method: "POST" })
-    );
+    const btn3d = screen.getByRole("button", { name: /3D View/i });
+    await userEvent.click(btn3d);
 
-    expect(useWarehouseStore.getState().selectedWarehouseId).toBe("new-id");
+    await waitFor(() => {
+      expect(useWarehouseStore.getState().viewMode).toBe("3d");
+    });
+
+    expect(screen.getByRole("button", { name: /2D View/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /3D View/i })).toBeInTheDocument();
   });
 });
