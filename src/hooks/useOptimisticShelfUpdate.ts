@@ -3,16 +3,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ShelfUpdatePayload } from "@/lib/shelves";
 import { patchShelf } from "@/lib/shelves";
 
-// Type definitions
-type ShelfShape = { id: string } & Record<string, unknown>;
-
-type WarehouseData = {
-  shelves: ShelfShape[];
-} & Record<string, unknown>;
-
-type OptimisticCtx = {
-  previous?: WarehouseData;
-};
+type Shelf = { id: string } & Record<string, unknown>;
+type WarehouseCache = { shelves?: Shelf[] } & Record<string, unknown>;
+type OptimisticCtx = { previous?: WarehouseCache };
 
 /**
  * Provides an optimistic shelf update mutation using the warehouse query cache.
@@ -20,38 +13,38 @@ type OptimisticCtx = {
  */
 export function useOptimisticShelfUpdate() {
   const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: ShelfUpdatePayload }) =>
-      patchShelf(id, data),
-      
+
+  return useMutation
+    unknown,
+    unknown,
+    { id: string; data: ShelfUpdatePayload },
+    OptimisticCtx
+  >({
+    mutationFn: async ({ id, data }) => patchShelf(id, data),
+
     onMutate: async ({ id, data }) => {
       await queryClient.cancelQueries({ queryKey: ["warehouse"] });
-      
-      const previous = queryClient.getQueryData<WarehouseData>(["warehouse"]);
-      
-      // Optimistically update shelf in cache
+
+      const previous = queryClient.getQueryData<WarehouseCache>(["warehouse"]);
+
       if (previous?.shelves) {
-        queryClient.setQueryData<WarehouseData>(["warehouse"], {
+        const next: WarehouseCache = {
           ...previous,
-          shelves: previous.shelves.map((s) =>
-            s.id === id ? { ...s, ...data } : s
-          ),
-        });
+          shelves: previous.shelves.map((s) => (s.id === id ? { ...s, ...data } : s)),
+        };
+        queryClient.setQueryData<WarehouseCache>(["warehouse"], next);
       }
-      
-      return { previous } satisfies OptimisticCtx;
+
+      return { previous };
     },
-    
-    onError: (_error, _vars, context?: OptimisticCtx) => {
-      // Rollback
+
+    onError: (_error, _vars, context) => {
       if (context?.previous) {
-        queryClient.setQueryData(["warehouse"], context.previous);
+        queryClient.setQueryData<WarehouseCache>(["warehouse"], context.previous);
       }
     },
-    
+
     onSettled: () => {
-      // Refetch to ensure consistency
       queryClient.invalidateQueries({ queryKey: ["warehouse"] });
     },
   });
