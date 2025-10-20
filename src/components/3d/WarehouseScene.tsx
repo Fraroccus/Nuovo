@@ -218,7 +218,7 @@ function ShelfMesh({
         e.stopPropagation();
         handleCommit();
       }}
-      onObjectChange={(e) => {
+      onObjectChange={(_e) => {
         // Keep Y anchored to floor visually during translate mode
         if (mode === "translate" && meshRef.current) {
           meshRef.current.position.y = shelf.height / 2;
