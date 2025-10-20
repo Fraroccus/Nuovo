@@ -20,12 +20,13 @@ const patchSchema = z
 
 export async function PATCH(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
-    const body = await request.json();
+    const { id } = params;
+    const body: unknown = await request.json();
     const parsed = patchSchema.safeParse(body);
+    
     if (!parsed.success) {
       return NextResponse.json(
         { error: "Invalid input", details: parsed.error.flatten() },
@@ -38,7 +39,8 @@ export async function PATCH(
       return NextResponse.json({ error: "Item not found" }, { status: 404 });
     }
 
-    const data: any = {};
+    const data: Record<string, unknown> = {};
+    
     if (parsed.data.name !== undefined) data.name = parsed.data.name;
     if (parsed.data.description !== undefined) data.description = parsed.data.description;
     if (parsed.data.price !== undefined) data.price = parsed.data.price;
@@ -70,10 +72,10 @@ export async function PATCH(
 
 export async function DELETE(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     // confirm exists
     const existing = await prisma.item.findUnique({ where: { id } });
     if (!existing) {
