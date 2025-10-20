@@ -33,7 +33,9 @@ export async function ensureDefaultWarehouse(
   client: PrismaClient = defaultPrisma,
   options: EnsureDefaultWarehouseOptions = {}
 ): Promise<Warehouse> {
-  const existing = await client.warehouse.findFirst({ where: { isDefault: true } });
+  const existing = await client.warehouse.findFirst({
+    where: { isDefault: true },
+  });
   if (existing) return existing;
 
   const data = {
