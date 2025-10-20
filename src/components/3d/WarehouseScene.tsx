@@ -167,16 +167,13 @@ function ShelfMesh({
     [color]
   );
 
-  // handle commit after interaction ends
   const handleCommit = () => {
     const mesh = meshRef.current;
     if (!mesh) return;
 
-    // Calculate new absolute position (snap to grid on X/Z), keep Y at half height
     const snappedX = snapToGrid(mesh.position.x, gridSize);
     const snappedZ = snapToGrid(mesh.position.z, gridSize);
 
-    // Calculate new absolute size from scale applied during manipulation
     const newWidth = clampMin(
       snapToGrid(shelf.width * mesh.scale.x, gridSize),
       gridSize
@@ -190,13 +187,12 @@ function ShelfMesh({
       gridSize
     );
 
-    // Reset mesh transforms to render from updated props on next paint
     mesh.scale.set(1, 1, 1);
     mesh.position.set(snappedX, newHeight / 2, snappedZ);
 
     void onCommit({
       positionX: snappedX,
-      positionY: 0, // ground floor baseline
+      positionY: 0,
       positionZ: snappedZ,
       width: newWidth,
       depth: newDepth,
@@ -210,12 +206,12 @@ function ShelfMesh({
       mode={mode}
       translationSnap={gridSize}
       scaleSnap={gridSize}
-      onMouseDown={(e) => {
+      onMouseDown={(_e) => {
         // stop orbiting while interacting
-        e.stopPropagation();
+        _e.stopPropagation();
       }}
-      onMouseUp={(e) => {
-        e.stopPropagation();
+      onMouseUp={(_e) => {
+        _e.stopPropagation();
         handleCommit();
       }}
       onObjectChange={(_e) => {
@@ -225,7 +221,6 @@ function ShelfMesh({
         }
       }}
     >
-      {/* Using a simple box mesh for the shelf */}
       <mesh
         ref={meshRef}
         position={basePosition}
