@@ -14,6 +14,10 @@ export type Shelf = {
   section: string;
   level: number;
   capacity: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
   warehouseId: string;
   createdAt: Date;
   updatedAt: Date;

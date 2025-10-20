@@ -36,6 +36,11 @@ model Shelf {
   section     String
   level       Int
   capacity    Int       @default(0)
+  // Position and dimensions for layout
+  x           Int       @default(0)
+  y           Int       @default(0)
+  width       Int       @default(1)
+  height      Int       @default(1)
   warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
   warehouseId String
   items       Item[]

@@ -70,8 +70,8 @@ export function AddWarehouseModal() {
         gridSize: data.gridSize ?? DEFAULTS.gridSize,
       };
 
-      const res = await fetch("/api/warehouses", {
-        method: "POST",
+      const res = await fetch("/api/warehouse", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });

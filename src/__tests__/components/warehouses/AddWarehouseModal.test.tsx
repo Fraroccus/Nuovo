@@ -53,8 +53,8 @@ describe("AddWarehouseModal", () => {
     });
 
     expect(global.fetch).toHaveBeenCalledWith(
-      "/api/warehouses",
-      expect.objectContaining({ method: "POST" })
+      "/api/warehouse",
+      expect.objectContaining({ method: "PATCH" })
     );
 
     expect(useWarehouseStore.getState().selectedWarehouseId).toBe("new-id");
