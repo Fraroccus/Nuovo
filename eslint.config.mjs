@@ -29,6 +29,16 @@ const eslintConfig = [
       prettier: (await import("eslint-plugin-prettier")).default,
     },
   },
+  {
+    files: ["src/tests/**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_" },
+      ],
+    },
+  },
 ];
 
 export default eslintConfig;
