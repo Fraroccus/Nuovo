@@ -10,20 +10,21 @@ import {
   removeItem,
 } from "@/lib/items";
 
-type Shelf = {
-  id: string;
-  name: string;
-};
-
+// ✅ Updated ItemDTO type with optional fields
 type ItemDTO = {
   id: string;
   shelfId: string;
   name: string;
-  sku: string;
+  sku?: string;
   quantity: number;
-  price: number;
-  category: string;
-  description: string | null;
+  price?: number;
+  category?: string;
+  description?: string;
+};
+
+type Shelf = {
+  id: string;
+  name: string;
 };
 
 type CreateItemPayload = {
@@ -99,7 +100,7 @@ export function ShelfDetailPanel() {
         id: `temp-${Date.now()}`,
         name: vars.name,
         sku: vars.sku,
-        description: vars.description ?? null,
+        description: vars.description ?? undefined,
         quantity: vars.quantity,
         price: vars.price,
         category: vars.category,
@@ -111,16 +112,16 @@ export function ShelfDetailPanel() {
       );
       return { previous, shelfId: vars.shelfId };
     },
-    onError: (err, _vars, ctx) => {
+    onError: (_err: Error, _vars, ctx) => {
       if (ctx) {
         queryClient.setQueryData(
           ["items", { shelfId: ctx.shelfId }],
           ctx.previous
         );
       }
-      setErrorMessage(err.message);
+      setErrorMessage(_err.message);
     },
-    onSuccess: () => {
+    onSuccess: (_data: ItemDTO) => {
       setMessage("Item added");
     },
     onSettled: () => {
@@ -146,15 +147,15 @@ export function ShelfDetailPanel() {
       });
       return { previous, shelfId };
     },
-    onError: (err, _vars, ctx) => {
+    onError: (_err: Error, _vars, ctx) => {
       if (ctx)
         queryClient.setQueryData(
           ["items", { shelfId: ctx.shelfId }],
           ctx.previous
         );
-      setErrorMessage(err.message);
+      setErrorMessage(_err.message);
     },
-    onSuccess: () => setMessage("Quantity updated"),
+    onSuccess: (_data: ItemDTO) => setMessage("Quantity updated"),
     onSettled: () => invalidateAll(),
   });
 
@@ -172,13 +173,13 @@ export function ShelfDetailPanel() {
       );
       return { previous, shelfId };
     },
-    onError: (err, _vars, ctx) => {
+    onError: (_err: Error, _vars, ctx) => {
       if (ctx)
         queryClient.setQueryData(
           ["items", { shelfId: ctx.shelfId }],
           ctx.previous
         );
-      setErrorMessage(err.message);
+      setErrorMessage(_err.message);
     },
     onSuccess: () => setMessage("Item removed"),
     onSettled: () => invalidateAll(),
@@ -305,16 +306,20 @@ export function ShelfDetailPanel() {
                   }
                   disabled={addMutation.isPending}
                 />
-                <input
+                <select
                   aria-label="Category"
-                  placeholder="Category"
                   className="rounded border px-2 py-1 text-sm"
                   value={form.category}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                     setForm((f) => ({ ...f, category: e.target.value }))
                   }
                   disabled={addMutation.isPending}
-                />
+                >
+                  <option>General</option>
+                  <option>Electronics</option>
+                  <option>Office</option>
+                  <option>Other</option>
+                </select>
                 <input
                   aria-label="Price"
                   placeholder="Price"
@@ -338,12 +343,12 @@ export function ShelfDetailPanel() {
                   }
                   disabled={addMutation.isPending}
                 />
-                <input
+                <textarea
                   aria-label="Description"
                   placeholder="Description"
                   className="col-span-2 rounded border px-2 py-1 text-sm"
                   value={form.description}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                     setForm((f) => ({ ...f, description: e.target.value }))
                   }
                   disabled={addMutation.isPending}
@@ -428,3 +433,4 @@ export function ShelfDetailPanel() {
     </div>
   );
 }
+
