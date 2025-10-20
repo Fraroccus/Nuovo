@@ -4,6 +4,11 @@ export type Warehouse = {
   location: string;
   description: string | null;
   capacity: number;
+  width: number;
+  length: number;
+  height: number;
+  gridSize: number;
+  isDefault: boolean;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -14,6 +19,13 @@ export type Shelf = {
   section: string;
   level: number;
   capacity: number;
+  // geometry
+  positionX: number;
+  positionY: number;
+  positionZ: number;
+  width: number;
+  depth: number;
+  height: number;
   warehouseId: string;
   createdAt: Date;
   updatedAt: Date;
