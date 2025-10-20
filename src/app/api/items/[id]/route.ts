@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 
@@ -7,13 +8,13 @@ const ItemAdjustSchema = z.object({
 });
 
 export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+  request: NextRequest,
+  context: { params: { id: string } }
+): Promise<Response> {
   try {
-    const body: unknown = await req.json();
+    const body = await request.json();
     const { delta } = ItemAdjustSchema.parse(body);
-    const { id } = params;
+    const { id } = context.params;
 
     const item = await prisma.item.update({
       where: { id },
