@@ -48,9 +48,8 @@ export function TopDownMap2D({
     | {
         type: "resize-e" | "resize-s";
         id: string;
-        // geometry at start
-        startLeft: number; // x of left edge
-        startTop: number; // y of top edge (z axis)
+        startLeft: number;
+        startTop: number;
         startWidth: number;
         startDepth: number;
         startPointerX: number;
@@ -175,7 +174,6 @@ export function TopDownMap2D({
       let cx = drag.startCenterX + dx;
       let cz = drag.startCenterZ + dz;
 
-      // Clamp so the rect stays within bounds
       const w = preview?.width ?? 0;
       const d = preview?.depth ?? 0;
       cx = clamp(cx, w / 2, viewWidth - w / 2);
@@ -187,7 +185,6 @@ export function TopDownMap2D({
     } else if (drag.type === "resize-e") {
       const dx = pt.x - drag.startPointerX;
       let newWidth = Math.max(gridSize, drag.startWidth + dx);
-      // Clamp right edge within bounds
       const right = drag.startLeft + newWidth;
       if (right > viewWidth) newWidth = viewWidth - drag.startLeft;
       const cx = drag.startLeft + newWidth / 2;
@@ -197,7 +194,6 @@ export function TopDownMap2D({
     } else if (drag.type === "resize-s") {
       const dy = pt.y - drag.startPointerY;
       let newDepth = Math.max(gridSize, drag.startDepth + dy);
-      // Clamp bottom edge within bounds
       const bottom = drag.startTop + newDepth;
       if (bottom > viewHeight) newDepth = viewHeight - drag.startTop;
       const cz = drag.startTop + newDepth / 2;
@@ -212,7 +208,6 @@ export function TopDownMap2D({
 
     const id = drag.id;
 
-    // Snap values to grid
     const snapped = {
       positionX: snapToGrid(preview.centerX, gridSize),
       positionZ: snapToGrid(preview.centerZ, gridSize),
@@ -276,17 +271,9 @@ export function TopDownMap2D({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
       >
-        <rect
-          x={0}
-          y={0}
-          width={viewWidth}
-          height={viewHeight}
-          fill="#f9fafb"
-        />
-        {/* grid */}
+        <rect x={0} y={0} width={viewWidth} height={viewHeight} fill="#f9fafb" />
         <g>{gridLines}</g>
 
-        {/* shelves */}
         {shelves.map((shelf) => {
           const isSelected = selectedShelfId === shelf.id;
 
@@ -323,8 +310,6 @@ export function TopDownMap2D({
                 }}
                 onPointerDown={(e) => onPointerDownMove(e, shelf)}
               />
-
-              {/* east resize handle */}
               <rect
                 data-testid={`handle-e-${shelf.id}`}
                 x={left + w - 0.25}
@@ -334,8 +319,6 @@ export function TopDownMap2D({
                 fill="#111827"
                 onPointerDown={(e) => onPointerDownResizeE(e, shelf)}
               />
-
-              {/* south resize handle */}
               <rect
                 data-testid={`handle-s-${shelf.id}`}
                 x={left + w / 2 - 0.25}
