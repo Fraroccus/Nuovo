@@ -13,7 +13,11 @@ describe("TopDownMap2D", () => {
     jest.restoreAllMocks();
     // reset store
     const { setState } = useWarehouseStore;
-    setState({ warehouseId: null, selectedShelfId: null, viewMode: "2d" } as any);
+    setState({
+      warehouseId: null,
+      selectedShelfId: null,
+      viewMode: "2d",
+    } as any);
   });
 
   it("selects shelf on click and syncs store selection", async () => {
@@ -38,14 +42,20 @@ describe("TopDownMap2D", () => {
 
     render(
       <Wrapper>
-        <TopDownMap2D shelves={shelves as any} gridSize={1} dimensions={{ width: 20, length: 20 }} />
+        <TopDownMap2D
+          shelves={shelves as any}
+          gridSize={1}
+          dimensions={{ width: 20, length: 20 }}
+        />
       </Wrapper>
     );
 
     const rect = await screen.findByTestId("shelf-rect-s1");
     fireEvent.click(rect);
 
-    await waitFor(() => expect(useWarehouseStore.getState().selectedShelfId).toBe("s1"));
+    await waitFor(() =>
+      expect(useWarehouseStore.getState().selectedShelfId).toBe("s1")
+    );
   });
 
   it("dragging shelf moves and triggers API call with snapped values", async () => {
@@ -75,13 +85,24 @@ describe("TopDownMap2D", () => {
 
     render(
       <Wrapper>
-        <TopDownMap2D shelves={shelves as any} gridSize={1} dimensions={{ width: 20, length: 20 }} />
+        <TopDownMap2D
+          shelves={shelves as any}
+          gridSize={1}
+          dimensions={{ width: 20, length: 20 }}
+        />
       </Wrapper>
     );
 
     const svg = screen.getByTestId("topdown-svg");
     // Mock bounding box size for coordinate conversion (200x200 px => 10 px per unit)
-    const bbox = { left: 0, top: 0, width: 200, height: 200, right: 200, bottom: 200 } as any;
+    const bbox = {
+      left: 0,
+      top: 0,
+      width: 200,
+      height: 200,
+      right: 200,
+      bottom: 200,
+    } as any;
     // @ts-expect-error override read-only for test
     svg.getBoundingClientRect = () => bbox;
 
@@ -129,13 +150,24 @@ describe("TopDownMap2D", () => {
 
     render(
       <Wrapper>
-        <TopDownMap2D shelves={shelves as any} gridSize={1} dimensions={{ width: 20, length: 20 }} />
+        <TopDownMap2D
+          shelves={shelves as any}
+          gridSize={1}
+          dimensions={{ width: 20, length: 20 }}
+        />
       </Wrapper>
     );
 
     const svg = screen.getByTestId("topdown-svg");
     // Mock bounding box size (200x200 -> 10px per unit)
-    const bbox = { left: 0, top: 0, width: 200, height: 200, right: 200, bottom: 200 } as any;
+    const bbox = {
+      left: 0,
+      top: 0,
+      width: 200,
+      height: 200,
+      right: 200,
+      bottom: 200,
+    } as any;
     // @ts-expect-error override read-only for test
     svg.getBoundingClientRect = () => bbox;
 

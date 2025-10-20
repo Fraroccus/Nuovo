@@ -53,7 +53,9 @@ export async function POST(request: Request) {
     }
 
     // Ensure shelf exists
-    const shelf = await prisma.shelf.findUnique({ where: { id: parsed.data.shelfId } });
+    const shelf = await prisma.shelf.findUnique({
+      where: { id: parsed.data.shelfId },
+    });
     if (!shelf) {
       return NextResponse.json({ error: "Shelf not found" }, { status: 404 });
     }

@@ -31,7 +31,11 @@ function clampMin(value: number, min: number) {
   return value < min ? min : value;
 }
 
-export function WarehouseScene({ shelves, gridSize, dimensions }: WarehouseSceneProps) {
+export function WarehouseScene({
+  shelves,
+  gridSize,
+  dimensions,
+}: WarehouseSceneProps) {
   const selectedShelfId = useWarehouseStore((s) => s.selectedShelfId);
   const setSelectedShelf = useWarehouseStore((s) => s.setSelectedShelf);
 
@@ -53,7 +57,9 @@ export function WarehouseScene({ shelves, gridSize, dimensions }: WarehouseScene
         <span className="text-xs text-gray-600">Mode</span>
         <button
           className={`rounded px-2 py-1 text-xs ${
-            mode === "translate" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
+            mode === "translate"
+              ? "bg-blue-600 text-white"
+              : "bg-gray-200 text-gray-700"
           }`}
           onClick={() => setMode("translate")}
         >
@@ -61,7 +67,9 @@ export function WarehouseScene({ shelves, gridSize, dimensions }: WarehouseScene
         </button>
         <button
           className={`rounded px-2 py-1 text-xs ${
-            mode === "scale" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
+            mode === "scale"
+              ? "bg-blue-600 text-white"
+              : "bg-gray-200 text-gray-700"
           }`}
           onClick={() => setMode("scale")}
         >
@@ -70,7 +78,9 @@ export function WarehouseScene({ shelves, gridSize, dimensions }: WarehouseScene
         {status === "saving" ? (
           <span className="ml-2 text-xs text-blue-700">Saving…</span>
         ) : status === "error" ? (
-          <span className="ml-2 text-xs text-red-700">Save failed. Reverted.</span>
+          <span className="ml-2 text-xs text-red-700">
+            Save failed. Reverted.
+          </span>
         ) : null}
       </div>
 
@@ -149,10 +159,13 @@ function ShelfMesh({
   const color = selected
     ? "#60a5fa" // blue-400
     : hovered
-    ? "#a16207" // amber-700 when hovered
-    : "#8B4513"; // base brown
+      ? "#a16207" // amber-700 when hovered
+      : "#8B4513"; // base brown
 
-  const material = useMemo(() => new THREE.MeshStandardMaterial({ color }), [color]);
+  const material = useMemo(
+    () => new THREE.MeshStandardMaterial({ color }),
+    [color]
+  );
 
   // handle commit after interaction ends
   const handleCommit = () => {
@@ -164,9 +177,18 @@ function ShelfMesh({
     const snappedZ = snapToGrid(mesh.position.z, gridSize);
 
     // Calculate new absolute size from scale applied during manipulation
-    const newWidth = clampMin(snapToGrid(shelf.width * mesh.scale.x, gridSize), gridSize);
-    const newDepth = clampMin(snapToGrid(shelf.depth * mesh.scale.z, gridSize), gridSize);
-    const newHeight = clampMin(snapToGrid(shelf.height * mesh.scale.y, gridSize), gridSize);
+    const newWidth = clampMin(
+      snapToGrid(shelf.width * mesh.scale.x, gridSize),
+      gridSize
+    );
+    const newDepth = clampMin(
+      snapToGrid(shelf.depth * mesh.scale.z, gridSize),
+      gridSize
+    );
+    const newHeight = clampMin(
+      snapToGrid(shelf.height * mesh.scale.y, gridSize),
+      gridSize
+    );
 
     // Reset mesh transforms to render from updated props on next paint
     mesh.scale.set(1, 1, 1);

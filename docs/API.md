@@ -11,6 +11,7 @@ GET /api/warehouses
 ```
 
 **Response:**
+
 ```json
 [
   {
@@ -35,6 +36,7 @@ POST /api/warehouses
 ```
 
 **Request Body:**
+
 ```json
 {
   "name": "string",
@@ -45,6 +47,7 @@ POST /api/warehouses
 ```
 
 **Response:**
+
 ```json
 {
   "id": "string",
@@ -64,6 +67,7 @@ GET /api/warehouses/{id}
 ```
 
 **Response:**
+
 ```json
 {
   "id": "string",
@@ -95,6 +99,7 @@ DELETE /api/warehouses/{id}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true
@@ -114,6 +119,7 @@ GET /api/shelves/{id}
 ```
 
 **Response:**
+
 ```json
 {
   "id": "string",
@@ -153,16 +159,19 @@ GET /api/items
 ```
 
 **Query Parameters:**
+
 - `shelfId` (optional): Filter by shelf ID
 - `category` (optional): Filter by category
 
 **Examples:**
+
 ```http
 GET /api/items?category=Electronics
 GET /api/items?shelfId=abc123
 ```
 
 **Response:**
+
 ```json
 [
   {
@@ -213,51 +222,51 @@ All endpoints may return error responses in the following format:
 
 ```typescript
 // Get all warehouses
-const warehouses = await fetch('/api/warehouses')
-  .then(res => res.json());
+const warehouses = await fetch("/api/warehouses").then((res) => res.json());
 
 // Create a warehouse
-const newWarehouse = await fetch('/api/warehouses', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+const newWarehouse = await fetch("/api/warehouses", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    name: 'New Warehouse',
-    location: '123 Main St',
-    capacity: 10000
-  })
-}).then(res => res.json());
+    name: "New Warehouse",
+    location: "123 Main St",
+    capacity: 10000,
+  }),
+}).then((res) => res.json());
 
 // Get items by category
-const electronics = await fetch('/api/items?category=Electronics')
-  .then(res => res.json());
+const electronics = await fetch("/api/items?category=Electronics").then((res) =>
+  res.json()
+);
 ```
 
 ### Using React Query
 
 ```typescript
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 // Fetch warehouses
 const { data: warehouses } = useQuery({
-  queryKey: ['warehouses'],
+  queryKey: ["warehouses"],
   queryFn: async () => {
-    const res = await fetch('/api/warehouses');
-    if (!res.ok) throw new Error('Failed to fetch');
+    const res = await fetch("/api/warehouses");
+    if (!res.ok) throw new Error("Failed to fetch");
     return res.json();
-  }
+  },
 });
 
 // Create warehouse
 const createMutation = useMutation({
   mutationFn: async (data) => {
-    const res = await fetch('/api/warehouses', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+    const res = await fetch("/api/warehouses", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error('Failed to create');
+    if (!res.ok) throw new Error("Failed to create");
     return res.json();
-  }
+  },
 });
 ```
 

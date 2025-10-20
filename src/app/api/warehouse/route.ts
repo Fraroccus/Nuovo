@@ -17,7 +17,10 @@ export async function GET() {
     });
 
     if (!warehouse) {
-      return NextResponse.json({ error: "Warehouse not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Warehouse not found" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(warehouse);

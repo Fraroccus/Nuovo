@@ -19,7 +19,11 @@ function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-export function TopDownMap2D({ shelves, gridSize, dimensions }: TopDownMap2DProps) {
+export function TopDownMap2D({
+  shelves,
+  gridSize,
+  dimensions,
+}: TopDownMap2DProps) {
   const selectedShelfId = useWarehouseStore((s) => s.selectedShelfId);
   const setSelectedShelf = useWarehouseStore((s) => s.setSelectedShelf);
 
@@ -54,16 +58,13 @@ export function TopDownMap2D({ shelves, gridSize, dimensions }: TopDownMap2DProp
       };
 
   const [drag, setDrag] = useState<DragState>(null);
-  const [preview, setPreview] = useState<
-    | null
-    | {
-        id: string;
-        centerX: number;
-        centerZ: number;
-        width: number;
-        depth: number;
-      }
-  >(null);
+  const [preview, setPreview] = useState<null | {
+    id: string;
+    centerX: number;
+    centerZ: number;
+    width: number;
+    depth: number;
+  }>(null);
 
   function toUnitCoords(e: React.PointerEvent | MouseEvent) {
     const svg = svgRef.current;
@@ -128,7 +129,13 @@ export function TopDownMap2D({ shelves, gridSize, dimensions }: TopDownMap2DProp
       startPointerX: pt.x,
       startPointerY: pt.y,
     });
-    setPreview({ id: shelf.id, centerX: shelf.positionX, centerZ: shelf.positionZ, width: shelf.width, depth: shelf.depth });
+    setPreview({
+      id: shelf.id,
+      centerX: shelf.positionX,
+      centerZ: shelf.positionZ,
+      width: shelf.width,
+      depth: shelf.depth,
+    });
     (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
   }
 
@@ -149,7 +156,13 @@ export function TopDownMap2D({ shelves, gridSize, dimensions }: TopDownMap2DProp
       startPointerX: pt.x,
       startPointerY: pt.y,
     });
-    setPreview({ id: shelf.id, centerX: shelf.positionX, centerZ: shelf.positionZ, width: shelf.width, depth: shelf.depth });
+    setPreview({
+      id: shelf.id,
+      centerX: shelf.positionX,
+      centerZ: shelf.positionZ,
+      width: shelf.width,
+      depth: shelf.depth,
+    });
     (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
   }
 
@@ -168,7 +181,9 @@ export function TopDownMap2D({ shelves, gridSize, dimensions }: TopDownMap2DProp
       cx = clamp(cx, w / 2, viewWidth - w / 2);
       cz = clamp(cz, d / 2, viewHeight - d / 2);
 
-      setPreview((p) => (p && p.id === drag.id ? { ...p, centerX: cx, centerZ: cz } : p));
+      setPreview((p) =>
+        p && p.id === drag.id ? { ...p, centerX: cx, centerZ: cz } : p
+      );
     } else if (drag.type === "resize-e") {
       const dx = pt.x - drag.startPointerX;
       let newWidth = Math.max(gridSize, drag.startWidth + dx);
@@ -176,7 +191,9 @@ export function TopDownMap2D({ shelves, gridSize, dimensions }: TopDownMap2DProp
       const right = drag.startLeft + newWidth;
       if (right > viewWidth) newWidth = viewWidth - drag.startLeft;
       const cx = drag.startLeft + newWidth / 2;
-      setPreview((p) => (p && p.id === drag.id ? { ...p, width: newWidth, centerX: cx } : p));
+      setPreview((p) =>
+        p && p.id === drag.id ? { ...p, width: newWidth, centerX: cx } : p
+      );
     } else if (drag.type === "resize-s") {
       const dy = pt.y - drag.startPointerY;
       let newDepth = Math.max(gridSize, drag.startDepth + dy);
@@ -184,7 +201,9 @@ export function TopDownMap2D({ shelves, gridSize, dimensions }: TopDownMap2DProp
       const bottom = drag.startTop + newDepth;
       if (bottom > viewHeight) newDepth = viewHeight - drag.startTop;
       const cz = drag.startTop + newDepth / 2;
-      setPreview((p) => (p && p.id === drag.id ? { ...p, depth: newDepth, centerZ: cz } : p));
+      setPreview((p) =>
+        p && p.id === drag.id ? { ...p, depth: newDepth, centerZ: cz } : p
+      );
     }
   }
 
@@ -242,7 +261,11 @@ export function TopDownMap2D({ shelves, gridSize, dimensions }: TopDownMap2DProp
   return (
     <div className="relative h-[600px] w-full">
       <div className="pointer-events-auto absolute right-4 top-4 z-10 rounded-md bg-white/90 px-2 py-1 text-xs text-gray-600 shadow">
-        {status === "saving" ? "Saving…" : status === "error" ? "Save failed. Reverted." : null}
+        {status === "saving"
+          ? "Saving…"
+          : status === "error"
+            ? "Save failed. Reverted."
+            : null}
       </div>
       <svg
         data-testid="topdown-svg"
@@ -253,7 +276,13 @@ export function TopDownMap2D({ shelves, gridSize, dimensions }: TopDownMap2DProp
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
       >
-        <rect x={0} y={0} width={viewWidth} height={viewHeight} fill="#f9fafb" />
+        <rect
+          x={0}
+          y={0}
+          width={viewWidth}
+          height={viewHeight}
+          fill="#f9fafb"
+        />
         {/* grid */}
         <g>{gridLines}</g>
 
@@ -261,10 +290,18 @@ export function TopDownMap2D({ shelves, gridSize, dimensions }: TopDownMap2DProp
         {shelves.map((shelf) => {
           const isSelected = selectedShelfId === shelf.id;
 
-          const cX = preview && preview.id === shelf.id ? preview.centerX : shelf.positionX;
-          const cZ = preview && preview.id === shelf.id ? preview.centerZ : shelf.positionZ;
-          const w = preview && preview.id === shelf.id ? preview.width : shelf.width;
-          const d = preview && preview.id === shelf.id ? preview.depth : shelf.depth;
+          const cX =
+            preview && preview.id === shelf.id
+              ? preview.centerX
+              : shelf.positionX;
+          const cZ =
+            preview && preview.id === shelf.id
+              ? preview.centerZ
+              : shelf.positionZ;
+          const w =
+            preview && preview.id === shelf.id ? preview.width : shelf.width;
+          const d =
+            preview && preview.id === shelf.id ? preview.depth : shelf.depth;
 
           const left = cX - w / 2;
           const top = cZ - d / 2;

@@ -41,7 +41,14 @@ async function fetchDefaultWarehouse(): Promise<Warehouse> {
 }
 
 export default function WarehouseDashboardPage() {
-  const { warehouseId, setWarehouseId, selectedShelfId, setSelectedShelf, viewMode, setViewMode } = useWarehouseStore();
+  const {
+    warehouseId,
+    setWarehouseId,
+    selectedShelfId,
+    setSelectedShelf,
+    viewMode,
+    setViewMode,
+  } = useWarehouseStore();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["warehouse"],
@@ -79,14 +86,18 @@ export default function WarehouseDashboardPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="mb-1 text-3xl font-bold text-gray-900">{data.name}</h1>
+            <h1 className="mb-1 text-3xl font-bold text-gray-900">
+              {data.name}
+            </h1>
             <p className="text-gray-600">Unified warehouse dashboard</p>
           </div>
           <div className="flex space-x-2">
             <button
               onClick={() => setViewMode("2d")}
               className={`rounded-md px-4 py-2 text-sm font-medium ${
-                viewMode === "2d" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                viewMode === "2d"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
             >
               2D View
@@ -94,7 +105,9 @@ export default function WarehouseDashboardPage() {
             <button
               onClick={() => setViewMode("3d")}
               className={`rounded-md px-4 py-2 text-sm font-medium ${
-                viewMode === "3d" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                viewMode === "3d"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
             >
               3D View
@@ -125,7 +138,9 @@ export default function WarehouseDashboardPage() {
 
           <div className="md:col-span-3">
             <div className="rounded-lg border border-gray-200 bg-white p-4">
-              <h2 className="mb-3 text-lg font-semibold text-gray-900">Shelves</h2>
+              <h2 className="mb-3 text-lg font-semibold text-gray-900">
+                Shelves
+              </h2>
               {data.shelves.length === 0 ? (
                 <p className="text-sm text-gray-600">No shelves configured.</p>
               ) : (
@@ -143,7 +158,9 @@ export default function WarehouseDashboardPage() {
                         <div className="flex items-center justify-between">
                           <span>{shelf.name}</span>
                           {shelf._count?.items ? (
-                            <span className="text-xs text-gray-500">{shelf._count.items} items</span>
+                            <span className="text-xs text-gray-500">
+                              {shelf._count.items} items
+                            </span>
                           ) : null}
                         </div>
                       </button>

@@ -42,9 +42,11 @@ export async function PATCH(
     const data: Record<string, unknown> = {};
     
     if (parsed.data.name !== undefined) data.name = parsed.data.name;
-    if (parsed.data.description !== undefined) data.description = parsed.data.description;
+    if (parsed.data.description !== undefined)
+      data.description = parsed.data.description;
     if (parsed.data.price !== undefined) data.price = parsed.data.price;
-    if (parsed.data.category !== undefined) data.category = parsed.data.category;
+    if (parsed.data.category !== undefined)
+      data.category = parsed.data.category;
 
     if (parsed.data.quantity !== undefined) {
       data.quantity = parsed.data.quantity;

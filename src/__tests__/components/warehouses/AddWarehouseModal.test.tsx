@@ -52,7 +52,11 @@ describe("WarehouseDashboardPage", () => {
       expect(useWarehouseStore.getState().viewMode).toBe("3d");
     });
 
-    expect(screen.getByRole("button", { name: /2D View/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /3D View/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /2D View/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /3D View/i })
+    ).toBeInTheDocument();
   });
 });

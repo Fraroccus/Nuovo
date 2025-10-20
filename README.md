@@ -5,6 +5,7 @@ A modern, full-stack warehouse management application built with Next.js 15, fea
 ## 🚀 Tech Stack
 
 ### Frontend
+
 - **Next.js 15** - App Router for modern React development
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first styling
@@ -14,11 +15,13 @@ A modern, full-stack warehouse management application built with Next.js 15, fea
 - **Jest + React Testing Library** - Testing framework
 
 ### Backend
+
 - **Prisma** - Type-safe ORM
 - **PostgreSQL** - Robust relational database
 - **Next.js API Routes** - RESTful API endpoints
 
 ### Development Tools
+
 - **ESLint** - Code linting
 - **Prettier** - Code formatting
 - **tsx** - TypeScript execution for scripts
@@ -26,6 +29,7 @@ A modern, full-stack warehouse management application built with Next.js 15, fea
 ## 📋 Prerequisites
 
 Before you begin, ensure you have the following installed:
+
 - Node.js (v18 or higher)
 - npm or yarn
 - PostgreSQL (v14 or higher)
@@ -33,24 +37,28 @@ Before you begin, ensure you have the following installed:
 ## 🛠️ Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd project
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
-   
+
    Copy the example environment file:
+
    ```bash
    cp .env.example .env
    ```
 
    Update the `.env` file with your database credentials:
+
    ```env
    DATABASE_URL="postgresql://username:password@localhost:5432/warehouse_db?schema=public"
    NEXT_PUBLIC_API_URL="http://localhost:3000"
@@ -59,16 +67,19 @@ Before you begin, ensure you have the following installed:
 4. **Set up the database**
 
    Generate Prisma Client:
+
    ```bash
    npm run db:generate
    ```
 
    Run migrations:
+
    ```bash
    npm run db:migrate
    ```
 
    Seed the database with sample data:
+
    ```bash
    npm run db:seed
    ```
@@ -76,12 +87,15 @@ Before you begin, ensure you have the following installed:
 ## 🏃‍♂️ Running the Application
 
 ### Development Mode
+
 ```bash
 npm run dev
 ```
+
 The application will be available at `http://localhost:3000`
 
 ### Production Build
+
 ```bash
 npm run build
 npm start
@@ -105,6 +119,7 @@ npm start
 ## 🗄️ Database Schema
 
 ### Warehouse
+
 - `id` - Unique identifier (CUID)
 - `name` - Warehouse name
 - `location` - Physical location
@@ -113,6 +128,7 @@ npm start
 - `shelves` - Related shelves (one-to-many)
 
 ### Shelf
+
 - `id` - Unique identifier (CUID)
 - `name` - Shelf name/identifier
 - `section` - Section within warehouse
@@ -122,6 +138,7 @@ npm start
 - `items` - Related items (one-to-many)
 
 ### Item
+
 - `id` - Unique identifier (CUID)
 - `name` - Item name
 - `sku` - Unique stock keeping unit
@@ -170,6 +187,7 @@ project/
 ## 🎯 Features
 
 ### Current Features
+
 - **Warehouse Management** - Create, view, and manage warehouse locations
 - **Inventory Tracking** - Track items across all warehouse locations
 - **3D Visualization** - Interactive 3D view of warehouse layouts
@@ -180,15 +198,18 @@ project/
 ### API Endpoints
 
 #### Warehouses
+
 - `GET /api/warehouses` - List all warehouses
 - `POST /api/warehouses` - Create a warehouse
 - `GET /api/warehouses/[id]` - Get warehouse details
 - `DELETE /api/warehouses/[id]` - Delete a warehouse
 
 #### Shelves
+
 - `GET /api/shelves/[id]` - Get shelf details with items
 
 #### Items
+
 - `GET /api/items` - List all items (supports filtering by shelfId and category)
 
 ## 🧪 Testing
@@ -196,11 +217,13 @@ project/
 The project uses Jest and React Testing Library for testing.
 
 Run tests:
+
 ```bash
 npm test
 ```
 
 Run tests in watch mode:
+
 ```bash
 npm run test:watch
 ```
@@ -208,6 +231,7 @@ npm run test:watch
 ## 🎨 Styling
 
 The project uses Tailwind CSS for styling. The configuration supports:
+
 - Custom color schemes
 - Dark mode support
 - Custom fonts (Geist Sans and Geist Mono)
@@ -216,30 +240,38 @@ The project uses Tailwind CSS for styling. The configuration supports:
 ## 🔧 Configuration Files
 
 ### Environment Variables
+
 See `.env.example` for required environment variables.
 
 ### Prisma
+
 Database configuration and schema are in `prisma/schema.prisma`.
 
 ### ESLint
+
 ESLint configuration is in `eslint.config.mjs` with Next.js and Prettier integration.
 
 ### Prettier
+
 Code formatting rules are defined in `.prettierrc`.
 
 ### TypeScript
+
 TypeScript configuration is in `tsconfig.json`.
 
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
+
 1. Push your code to GitHub
 2. Import the project in Vercel
 3. Add environment variables
 4. Deploy
 
 ### Other Platforms
+
 Ensure you:
+
 1. Set up PostgreSQL database
 2. Configure environment variables
 3. Run migrations: `npm run db:migrate`

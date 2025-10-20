@@ -45,7 +45,9 @@ describe("useOptimisticShelfUpdate", () => {
       json: async () => ({ ...initialWarehouse.shelves[0], ...newData }),
     } as any);
 
-    const { result } = renderHook(() => useOptimisticShelfUpdate(), { wrapper });
+    const { result } = renderHook(() => useOptimisticShelfUpdate(), {
+      wrapper,
+    });
 
     await act(async () => {
       await result.current.mutateAsync({ id: "s1", data: newData });
@@ -70,7 +72,9 @@ describe("useOptimisticShelfUpdate", () => {
       json: async () => ({ error: "nope" }),
     } as any);
 
-    const { result } = renderHook(() => useOptimisticShelfUpdate(), { wrapper });
+    const { result } = renderHook(() => useOptimisticShelfUpdate(), {
+      wrapper,
+    });
 
     // Kick off mutation and expect it to throw
     await expect(

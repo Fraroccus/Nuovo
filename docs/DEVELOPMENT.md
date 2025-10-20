@@ -103,12 +103,15 @@ src/
 ### Adding State Management
 
 For local component state:
+
 - Use React `useState` or `useReducer`
 
 For shared client state:
+
 - Create/update Zustand store in `src/store`
 
 For server state:
+
 - Use React Query in components
 
 ### Writing Tests
@@ -123,6 +126,7 @@ For server state:
 ### Prisma Studio
 
 Visual database browser:
+
 ```bash
 npm run db:studio
 ```
@@ -130,16 +134,19 @@ npm run db:studio
 ### Database Migrations
 
 Create a migration:
+
 ```bash
 npm run db:migrate
 ```
 
 Push schema without migration (dev only):
+
 ```bash
 npm run db:push
 ```
 
 Reset database (dev only):
+
 ```bash
 npx prisma migrate reset
 ```
@@ -147,6 +154,7 @@ npx prisma migrate reset
 ### Seeding Data
 
 Run seed script:
+
 ```bash
 npm run db:seed
 ```
@@ -158,8 +166,9 @@ Edit seed data in `prisma/seed.ts`
 ### Server-side Debugging
 
 Add console.logs in API routes or server components:
+
 ```typescript
-console.log('Debug data:', data);
+console.log("Debug data:", data);
 ```
 
 View logs in terminal where dev server is running.
@@ -167,6 +176,7 @@ View logs in terminal where dev server is running.
 ### Client-side Debugging
 
 Use browser DevTools:
+
 - React DevTools for component inspection
 - Network tab for API requests
 - Console for logs
@@ -174,8 +184,9 @@ Use browser DevTools:
 ### Database Queries
 
 Enable Prisma query logging in `src/lib/prisma.ts`:
+
 ```typescript
-log: ["query", "error", "warn"]
+log: ["query", "error", "warn"];
 ```
 
 ### React Query DevTools
