@@ -2,16 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 
-// Schema for request validation
+// Zod schema for PATCH request validation
 const ItemAdjustSchema = z.object({
   delta: z.number().int(),
 });
 
-// PATCH handler for updating item quantity
+// PATCH handler: increment/decrement item quantity
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
-): Promise<Response> {
+  context: { params: { id: string } }
+): Promise<NextResponse> {
+  const { params } = context;
   try {
     const body = await req.json();
     const { delta } = ItemAdjustSchema.parse(body);
@@ -23,20 +24,17 @@ export async function PATCH(
 
     return NextResponse.json(item);
   } catch (error) {
-    console.error("Error updating item:", error);
-
-    return NextResponse.json(
-      { error: "Failed to update item" },
-      { status: 400 }
-    );
+    console.error("PATCH error:", error);
+    return NextResponse.json({ error: "Failed to update item" }, { status: 400 });
   }
 }
 
-// Optional: GET handler to fetch a single item
+// GET handler: fetch a single item by ID
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
-): Promise<Response> {
+  context: { params: { id: string } }
+): Promise<NextResponse> {
+  const { params } = context;
   try {
     const item = await prisma.item.findUnique({
       where: { id: params.id },
@@ -48,19 +46,17 @@ export async function GET(
 
     return NextResponse.json(item);
   } catch (error) {
-    console.error("Error fetching item:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch item" },
-      { status: 500 }
-    );
+    console.error("GET error:", error);
+    return NextResponse.json({ error: "Failed to fetch item" }, { status: 500 });
   }
 }
 
-// Optional: DELETE handler to remove an item
+// DELETE handler: remove an item by ID
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
-): Promise<Response> {
+  context: { params: { id: string } }
+): Promise<NextResponse> {
+  const { params } = context;
   try {
     await prisma.item.delete({
       where: { id: params.id },
@@ -68,10 +64,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: "Item deleted" });
   } catch (error) {
-    console.error("Error deleting item:", error);
-    return NextResponse.json(
-      { error: "Failed to delete item" },
-      { status: 500 }
-    );
+    console.error("DELETE error:", error);
+    return NextResponse.json({ error: "Failed to delete item" }, { status: 500 });
   }
 }
