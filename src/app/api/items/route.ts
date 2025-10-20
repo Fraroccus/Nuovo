@@ -25,10 +25,7 @@ export async function PATCH(
     return NextResponse.json(item);
   } catch (error) {
     console.error("PATCH error:", error);
-    return NextResponse.json(
-      { error: "Failed to update item" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Failed to update item" }, { status: 400 });
   }
 }
 
@@ -44,19 +41,13 @@ export async function GET(
     });
 
     if (!item) {
-      return NextResponse.json(
-        { error: "Item not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Item not found" }, { status: 404 });
     }
 
     return NextResponse.json(item);
   } catch (error) {
     console.error("GET error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch item" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch item" }, { status: 500 });
   }
 }
 
@@ -74,9 +65,6 @@ export async function DELETE(
     return NextResponse.json({ message: "Item deleted" });
   } catch (error) {
     console.error("DELETE error:", error);
-    return NextResponse.json(
-      { error: "Failed to delete item" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to delete item" }, { status: 500 });
   }
 }
